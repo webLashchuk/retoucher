@@ -50,18 +50,19 @@ function images() {
     .pipe(dest('app/images'))
 }
 
-function sprite() {
-    return src('app/images/*.svg')
-    .pipe(svgSprite({
-        mode: {
+function svgSprites() {
+    return src('app/images/icons/*.svg')
+      .pipe(
+        svgSprite({
+          mode: {
             stack: {
-                sprite: '../sprite.svg',
-                example: true
-            }
-        }
-    }))
-    .pipe(dest('app/images'))
-}
+              sprite: '../sprite.svg', 
+            },
+          },
+        })
+      )
+          .pipe(dest('app/images')); 
+  }
 
 function scripts() {
     return src([
@@ -94,6 +95,7 @@ function watching() {
         }
     });
     watch(['app/scss/style.scss'], styles)
+    watch(['app/images/icons/*.svg'], svgSprites)
     watch(['app/images/src'], images)
     watch(['app/js/main.js'], scripts)
     watch(['app/components/*', 'app/pages/*'], pages)
@@ -124,9 +126,9 @@ exports.images = images;
 exports.fonts = fonts;
 exports.pages = pages;
 exports.building = building;
-exports.sprite = sprite;
+exports.svgSprites = svgSprites;
 exports.scripts = scripts;
 exports.watching = watching;
 
 exports.build = series(cleanDist, building); 
-exports.default = parallel(styles, images, scripts, pages, watching);
+exports.default = parallel(svgSprites, styles, images, scripts, pages, watching);
